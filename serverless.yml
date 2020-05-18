@@ -1,9 +1,11 @@
-service: aws-node-rest-api-with-dynamodb
+service: rallyboard
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
+  stage: beta
+  region: eu-north-1
   runtime: nodejs10.x
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
