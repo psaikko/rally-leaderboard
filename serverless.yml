@@ -2,13 +2,30 @@ service: rallyboard
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+custom:
+  offline:
+    local: true
+    other: false
+  endpoints:
+    dynamodb-url: 'http://localhost:8000'
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - local
+
 provider:
   name: aws
-  stage: beta
-  region: eu-north-1
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, 'eu-north-1'}
   runtime: nodejs10.x
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    CONFIG_DYNAMODB_ENDPOINT: ${self:custom.endpoints.dynamodb-url}
+    IS_OFFLINE: ${self:custom.offline.${self:provider.stage}, self:custom.offline.other}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,7 +35,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
   create:
