@@ -23,7 +23,7 @@ provider:
   region: ${opt:region, 'eu-north-1'}
   runtime: nodejs10.x
   environment:
-    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    DYNAMODB_TABLE: ${self:service}-stagetimes-${self:provider.stage}
     CONFIG_DYNAMODB_ENDPOINT: ${self:custom.endpoints.dynamodb-url}
     IS_OFFLINE: ${self:custom.offline.${self:provider.stage}, self:custom.offline.other}
   iamRoleStatements:
@@ -39,60 +39,58 @@ provider:
 
 functions:
   create:
-    handler: todos/create.create
+    handler: stagetimes/create.create
     events:
       - http:
-          path: todos
+          path: stagetimes
           method: post
           cors: true
 
   list:
-    handler: todos/list.list
+    handler: stagetimes/list.list
     events:
       - http:
-          path: todos
+          path: stagetimes
           method: get
           cors: true
 
   get:
-    handler: todos/get.get
+    handler: stagetimes/get.get
     events:
       - http:
-          path: todos/{id}
+          path: stagetimes/{id}
           method: get
-          cors: true
-
-  update:
-    handler: todos/update.update
-    events:
-      - http:
-          path: todos/{id}
-          method: put
-          cors: true
-
-  delete:
-    handler: todos/delete.delete
-    events:
-      - http:
-          path: todos/{id}
-          method: delete
           cors: true
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    StageTimesDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
+          - AttributeName: game-country-stage
+            AttributeType: S
+          - AttributeName: time
+            AttributeType: N
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        GlobalSecondaryIndexes:
+        - IndexName: stageGSI
+          KeySchema:
+          - AttributeName: game-country-stage
+            KeyType: HASH
+          - AttributeName: time
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
