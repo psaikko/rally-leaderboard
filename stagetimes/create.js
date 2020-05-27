@@ -40,7 +40,7 @@ module.exports.create = (event, context, callback) => {
       'game': data.game,
       'rally': data.rally,
       'stage': data.stage,
-      'game-stage-rally': [data.game, data.rally, data.stage].join("-"),
+      'gameRallyStage': [data.game, data.rally, data.stage].join("-"),
       'splits': data.splits,
       'time': data.time,
       'car': data.car,
