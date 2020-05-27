@@ -29,7 +29,8 @@ module.exports.getTimesByStage = (event, context, callback) => {
     KeyConditionExpression: 'gameRallyStage = :stageid',
     ExpressionAttributeValues: {
       ':stageid': gsiKey
-    }
+    },
+    Limit: 10
   };
 
   // fetch stage time from the database
@@ -48,7 +49,7 @@ module.exports.getTimesByStage = (event, context, callback) => {
     // create a response
     const response = {
       statusCode: 200,
-      body: JSON.stringify(result),
+      body: JSON.stringify(result.Items),
     };
     callback(null, response);
   });
