@@ -1,17 +1,9 @@
 # rallyboard
 
-This is a serverless REST API based on the [example tempate](https://github.com/serverless/examples/tree/master/aws-node-rest-api-with-dynamodb).
+Backend and database for an online leaderboard for old PC rally games.
 
-## Structure
+This project is based on the [serverless REST API example tempate](https://github.com/serverless/examples/tree/master/aws-node-rest-api-with-dynamodb).
 
-This service has a separate directory for all the todo operations. For each operation exactly one file exists e.g. `todos/delete.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
-
-The idea behind the `todos` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
-
-## Use-cases
-
-- API for a Web Application
-- API for a Mobile Application
 
 ## Setup
 
@@ -23,67 +15,36 @@ npm install
 
 ## Deploy
 
-In order to deploy the endpoint simply run
+### Locally
 
 ```bash
-serverless deploy
+serverless offline start
+```
+
+### To AWS
+
+```bash
+serverless deploy --stage prod
 ```
 
 ## Usage
 
-You can create, retrieve, update, or delete todos with the following commands:
+You can currently upload stage times and query the top times by stage.
+Take note of `$API_KEY` from serverless output.
 
-### Create a Todo
+### Upload a time
 
 ```bash
-curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/todos --data '{ "text": "Learn Serverless" }'
+curl -X POST http://localhost:3000/local/leaderboard -d '{ "player": "Player 1", "game": "CMR", "rally": "Greece", "stage": "Krinides", "splits": [1,2,3,4], "time": 42, car: "SUBARU", "manual": true }' -H "x-api-key: $API_KEY" -H "Content-Type: application/json"
 ```
 
 Example Result:
 ```bash
-{"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
+{"id":"8f9c0cf0-a117-11ea-8c28-3f89547f31c9","player":"Player 1","game":"CMR","rally":"Greece","stage":"Krinides","gameRallyStage":"CMR-Greece-Krinides","splits":[1,2,3,4],"time":42,"car":"SUBARU","manual":true,"createdAt":1590693315390}
 ```
 
-### List all Todos
+### List top times for a stage
 
 ```bash
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/todos
+curl -X GET 'http://localhost:3000/local/leaderboard/CMR/Greece/Krinides'
 ```
-
-Example output:
-```bash
-[{"text":"Deploy my first service","id":"ac90feaa11e6-9ede-afdfa051af86","checked":true,"updatedAt":1479139961304},{"text":"Learn Serverless","id":"206793aa11e6-9ede-afdfa051af86","createdAt":1479139943241,"checked":false,"updatedAt":1479139943241}]%
-```
-
-### Get one Todo
-
-```bash
-# Replace the <id> part with a real id from your todos table
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/todos/<id>
-```
-
-Example Result:
-```bash
-{"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
-```
-
-### Update a Todo
-
-```bash
-# Replace the <id> part with a real id from your todos table
-curl -X PUT https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/todos/<id> --data '{ "text": "Learn Serverless", "checked": true }'
-```
-
-Example Result:
-```bash
-{"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":true,"updatedAt":1479138570824}%
-```
-
-### Delete a Todo
-
-```bash
-# Replace the <id> part with a real id from your todos table
-curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/todos/<id>
-```
-
-No output
