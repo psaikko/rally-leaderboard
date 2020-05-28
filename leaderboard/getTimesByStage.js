@@ -50,6 +50,9 @@ module.exports.getTimesByStage = (event, context, callback) => {
     const response = {
       statusCode: 200,
       body: JSON.stringify(result.Items),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      }
     };
     callback(null, response);
   });
