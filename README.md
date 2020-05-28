@@ -4,6 +4,7 @@ Backend and database for an online leaderboard for old PC rally games.
 
 This project is based on the [serverless REST API example tempate](https://github.com/serverless/examples/tree/master/aws-node-rest-api-with-dynamodb).
 
+See also the [savefile decoder repository](https://github.com/psaikko/rally-decode).
 
 ## Setup
 
@@ -35,7 +36,7 @@ Take note of `$API_KEY` from serverless output.
 ### Upload a time
 
 ```bash
-curl -X POST http://localhost:3000/local/leaderboard -d '{ "player": "Player 1", "game": "CMR", "rally": "Greece", "stage": "Krinides", "splits": [1,2,3,4], "time": 42, car: "SUBARU", "manual": true }' -H "x-api-key: $API_KEY" -H "Content-Type: application/json"
+curl -X POST http://localhost:3000/local/leaderboard -d '{ "player": "Player 1", "game": "CMR", "rally": "Greece", "stage": "Krinides", "splits": [1,2,3,4], "time": 42, "car": "SUBARU", "manual": true }' -H "x-api-key: $API_KEY" -H "Content-Type: application/json"
 ```
 
 Example Result:
