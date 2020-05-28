@@ -21,7 +21,7 @@ module.exports.getTimesByStage = (event, context, callback) => {
     event.pathParameters.game, 
     event.pathParameters.rally, 
     event.pathParameters.stage
-    ].join('-');
+    ].map(decodeURI).join('-');
 
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
