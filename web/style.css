@@ -1,0 +1,16 @@
+body {
+    font-family: serif;
+    background-color: lightgray;
+}
+
+table {
+    border: 2px solid darkgray;
+    border-bottom: 2px solid gray;
+    border-right: 2px solid gray;
+}
+
+th, td {
+    border: 1px solid darkgray;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+}
