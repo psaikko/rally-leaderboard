@@ -1,6 +1,6 @@
 'use strict';
 
-const uuid = require('uuid');
+const md5 = require('md5');
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
 const CONFIG_DYNAMODB_ENDPOINT = process.env.CONFIG_DYNAMODB_ENDPOINT;
@@ -30,12 +30,12 @@ module.exports.create = (event, context, callback) => {
     return;
   }
 
-  console.log(data)
+  const id = md5(data.player+data.car+data.game+data.rally+data.stage+data.splits);
 
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
-      'id': uuid.v1(),
+      'id': id,
       'player': data.player,
       'game': data.game,
       'rally': data.rally,

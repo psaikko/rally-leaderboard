@@ -5,7 +5,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "uuid": "^2.0.3"
+    "md5": "^2.2.1"
   },
   "devDependencies": {
     "aws-sdk": "^2.686.0",
