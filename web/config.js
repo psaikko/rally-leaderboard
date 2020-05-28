@@ -1,4 +1,4 @@
-export const api_url = "https://i2om1dhh2j.execute-api.eu-north-1.amazonaws.com/prod/leaderboard";
+export const api_url = "https://3tdo136oyi.execute-api.eu-north-1.amazonaws.com/prod/leaderboard";
 
 export const rally_list = [
     "New Zealand",
