@@ -25,7 +25,7 @@ module.exports.create = (event, context, callback) => {
     callback(null, {
       statusCode: 400,
       headers: { 'Content-Type': 'text/plain' },
-      body: 'Couldn\'t create the stagetime item.',
+      body: 'Couldn\'t create the leaderboard item.',
     });
     return;
   }
@@ -57,7 +57,7 @@ module.exports.create = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t create the stagetime item.',
+        body: 'Couldn\'t create the leaderboard item.',
       });
       return;
     }

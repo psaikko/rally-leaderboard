@@ -19,11 +19,13 @@ custom:
 
 provider:
   name: aws
+  apiKeys: 
+    - awsPostKey
   stage: ${opt:stage, 'local'}
   region: ${opt:region, 'eu-north-1'}
   runtime: nodejs10.x
   environment:
-    DYNAMODB_TABLE: ${self:service}-stagetimes-${self:provider.stage}
+    DYNAMODB_TABLE: ${self:service}-leaderboard-${self:provider.stage}
     CONFIG_DYNAMODB_ENDPOINT: ${self:custom.endpoints.dynamodb-url}
     IS_OFFLINE: ${self:custom.offline.${self:provider.stage}, self:custom.offline.other}
   iamRoleStatements:
@@ -39,40 +41,25 @@ provider:
 
 functions:
   create:
-    handler: stagetimes/create.create
+    handler: leaderboard/create.create
     events:
       - http:
-          path: stagetimes
+          path: leaderboard
           method: post
-          cors: true
-
-  list:
-    handler: stagetimes/list.list
-    events:
-      - http:
-          path: stagetimes
-          method: get
-          cors: true
-
-  get:
-    handler: stagetimes/get.get
-    events:
-      - http:
-          path: stagetimes/{id}
-          method: get
+          private: true
           cors: true
 
   getTimesByStage:
-    handler: stagetimes/getTimesByStage.getTimesByStage
+    handler: leaderboard/getTimesByStage.getTimesByStage
     events:
       - http:
-          path: stagetimes/{game}/{rally}/{stage}
+          path: leaderboard/{game}/{rally}/{stage}
           method: get
           cors: true
 
 resources:
   Resources:
-    StageTimesDynamoDbTable:
+    leaderboardDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
