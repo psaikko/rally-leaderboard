@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.683.0",
-    "serverless-http": "^2.5.0",
+    "serverless": "^1.71.3",
     "uuid": "^2.0.3"
   },
   "devDependencies": {
