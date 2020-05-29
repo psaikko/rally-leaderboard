@@ -4,13 +4,20 @@ import { ENode, TNode } from "./domppa.js"
 const tableColumnNames = ["player","time","splits","car","transmission"]
 
 function makeRallyHeader(rally) {
-    let header = document.createElement("h3");
-    let flag = document.createElement("img");
-    flag.src = `./assets/flags/${rally.toLowerCase()}.gif`;
-    flag.width = 50;
-    header.appendChild(flag);
-    header.appendChild(document.createTextNode(rally));
-    return header;
+    return ENode(
+        "h3",
+        [],
+        [
+            ENode(
+                "img",
+                [
+                    ["src", `./assets/flags/${rally.toLowerCase()}.gif`],
+                    ["width", 50]
+                ]
+            ),
+            TNode(rally),
+        ]
+    );
 }
 
 function getTableIdentifier(game, rally, stage) {
@@ -57,13 +64,24 @@ function makeRow(stagetime_data) {
     );
 }
 
-function makeStageTables() {
+function makeRallyBlocks() {
     let cmr_root_element = document.getElementById("CMR-rallies");
 
     rally_list.forEach(rally => {
-        cmr_root_element.appendChild(makeRallyHeader(rally));
-        cmr_root_element.appendChild(makeStageTable("CMR", rally, "Rally"));
-    })
+        cmr_root_element.appendChild(
+            ENode(
+                "div",
+                [
+                    ["id", `${rally}-block`],
+                    ["class", "rally-block"]
+                ],
+                [
+                    makeRallyHeader(rally),
+                    makeStageTable("CMR", rally, "Rally")
+                ]
+            )
+        );
+    });
 }
 
 function formatTime(hundredths) {
@@ -122,7 +140,7 @@ async function loadRallies() {
     }
 }
 
-makeStageTables();
+makeRallyBlocks();
 loadRallies()
     .then(() => console.log("OK"))
     .catch(() => console.log("ERROR"));
