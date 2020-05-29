@@ -4,13 +4,11 @@ const tableColumnNames = ["player","time","splits","car","transmission"]
 
 function makeRallyHeader(rally) {
     let header = document.createElement("h3");
-
     let flag = document.createElement("img");
     flag.src = `./assets/flags/${rally.toLowerCase()}.gif`;
-
+    flag.width = 50;
     header.appendChild(flag);
-    //header.innerText += rally;
-
+    header.appendChild(document.createTextNode(rally));
     return header;
 }
 
