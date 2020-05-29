@@ -1,4 +1,5 @@
 import { api_url, rally_list, stage_lists } from "./config.js";
+import { ENode, TNode } from "./domppa.js"
 
 const tableColumnNames = ["player","time","splits","car","transmission"]
 
@@ -17,49 +18,51 @@ function getTableIdentifier(game, rally, stage) {
 }
 
 function makeStageTable(game, rally, stage) {
-    let tableDiv = document.createElement("div");
-    let tableName = document.createElement("h4");
-    tableName.innerText = stage;
-    let table = document.createElement("table");
-    let tableHeader = document.createElement("thead");
-    let tableHeaderRow = document.createElement("tr");
-    tableColumnNames.forEach(colname => {
-        let tableHeaderCell = document.createElement("th");
-        tableHeaderCell.innerText = colname;
-        tableHeaderRow.appendChild(tableHeaderCell);
-    })
-    let tableBody = document.createElement("tbody");
-    tableBody.id = getTableIdentifier(game, rally, stage);
-    
-    tableHeader.appendChild(tableHeaderRow);
-    table.appendChild(tableHeader);
-    table.appendChild(tableBody);
-    tableDiv.appendChild(tableName);
-    tableDiv.appendChild(table);
-    return tableDiv;
+    return ENode(
+        "div",
+        [],
+        [
+            ENode("h4", [["innerText", stage]]),
+            ENode("table",
+                [],
+                [
+                    ENode(
+                        "thead",
+                        [],
+                        tableColumnNames.map(colname => ENode(
+                            "th", 
+                            [], 
+                            [TNode(colname)]
+                        ))
+                    ),
+                    ENode(
+                        "tbody",
+                        [["id", getTableIdentifier(game, rally, stage)]]
+                    )
+                ]
+            )
+        ]
+    );
 }
 
 function makeRow(stagetime_data) {
-    let row = document.createElement("tr");
-    tableColumnNames.forEach(colname => {
-        let cell = document.createElement("td")
-        cell.innerText = stagetime_data[colname];
-        if (colname === "time" || colname === "splits") {
-            cell.className = "timing";
-        }            
-        row.appendChild(cell);
-    });
-    return row;
+    return ENode(
+        "tr",
+        [],
+        tableColumnNames.map(colname => ENode(
+            "td", 
+            [["class", (colname === "time" || colname === "splits") ? "timing" : ""]],
+            [TNode(stagetime_data[colname])]
+        ))
+    );
 }
 
-function createTables() {
+function makeStageTables() {
     let cmr_root_element = document.getElementById("CMR-rallies");
 
     rally_list.forEach(rally => {
-        const header = makeRallyHeader(rally);
-        const table = makeStageTable("CMR", rally, "Rally");
-        cmr_root_element.appendChild(header);
-        cmr_root_element.appendChild(table);
+        cmr_root_element.appendChild(makeRallyHeader(rally));
+        cmr_root_element.appendChild(makeStageTable("CMR", rally, "Rally"));
     })
 }
 
@@ -119,7 +122,7 @@ async function loadRallies() {
     }
 }
 
-createTables();
+makeStageTables();
 loadRallies()
     .then(() => console.log("OK"))
     .catch(() => console.log("ERROR"));
