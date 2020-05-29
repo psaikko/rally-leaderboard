@@ -1,7 +1,7 @@
 import { apiUrl, rallyList, stageLists } from "./config.js";
 import { ENode, TNode } from "./domppa.js"
 
-const tableColumnNames = ["player","time","splits","car","transmission"]
+const tableColumnNames = ["#","player","time","splits","car","transmission"]
 
 let stagesLoaded = {};
 rallyList.forEach(rally => {
@@ -153,7 +153,8 @@ function getSplitDiffs(splits) {
     return splits;
 }
 
-function preprocessRowData(stageTimeData) {
+function preprocessRowData(stageTimeData, i) {
+    stageTimeData["#"] = i+1;
     stageTimeData["transmission"] = stageTimeData["manual"] ? "Manual" : "Automatic";
     stageTimeData["time"] = formatTime(stageTimeData["time"]);
     stageTimeData["splits"] = getSplitDiffs(stageTimeData["splits"])
@@ -179,8 +180,8 @@ async function fetchStageTimes(rally, stage) {
 function updateTableData(rally, stage, data) {
     let tablebody = document.getElementById(makeTableBodyId('CMR', rally, stage));
     tablebody.innerText = '';
-    data.forEach(stageTimeData => {
-        tablebody.appendChild(makeRow(preprocessRowData(stageTimeData)));
+    data.forEach((stageTimeData, i) => {
+        tablebody.appendChild(makeRow(preprocessRowData(stageTimeData, i)));
     });
 }
 
