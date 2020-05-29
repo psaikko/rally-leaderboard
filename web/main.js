@@ -20,33 +20,30 @@ function makeRallyHeader(rally) {
     );
 }
 
-function getTableIdentifier(game, rally, stage) {
+function makeTableBodyId(game, rally, stage) {
     return [game, rally, stage, "tablebody"].join("-").replace(/ /g,"_");
 }
 
-function makeStageTable(game, rally, stage) {
-    return ENode(
-        "div",
-        [],
+function makeTableId(game, rally, stage) {
+    return [game, rally, stage, "table"].join("-").replace(/ /g,"_");
+}
+
+function makeStageTable(game, rally, stage, ...attributes) {
+    return ENode("table",
+        [["id", makeTableId(game, rally, stage)], ...attributes],
         [
-            ENode("h4", [["innerText", stage]]),
-            ENode("table",
+            ENode(
+                "thead",
                 [],
-                [
-                    ENode(
-                        "thead",
-                        [],
-                        tableColumnNames.map(colname => ENode(
-                            "th", 
-                            [], 
-                            [TNode(colname)]
-                        ))
-                    ),
-                    ENode(
-                        "tbody",
-                        [["id", getTableIdentifier(game, rally, stage)]]
-                    )
-                ]
+                tableColumnNames.map(colname => ENode(
+                    "th",
+                    [],
+                    [TNode(colname)]
+                ))
+            ),
+            ENode(
+                "tbody",
+                [["id", makeTableBodyId(game, rally, stage)]]
             )
         ]
     );
@@ -64,6 +61,37 @@ function makeRow(stagetime_data) {
     );
 }
 
+function makeStagesList(rally) {
+    return ENode("div",
+        [],
+        [
+            ENode("h4", [], [TNode("Stages")]),
+            ENode(
+                "ol",
+                [["class", "stages-list"]],
+                stage_lists[rally].map(stagename => {
+                    var table = makeStageTable("CMR",rally,stagename,["class","hidden"]);
+                    var listitem = ENode(
+                        "li",
+                        [["class", "stage-name"]],
+                        [
+                            TNode(stagename),
+                            table
+                        ]
+                    )
+                    listitem.addEventListener('click', e => {
+                        const hidden = table.classList.toggle("hidden");
+                        if (!hidden) {
+                            loadStageData(rally, stagename);
+                        }
+                    })
+                    return listitem;
+                })
+            )
+        ]
+    );
+}
+
 function makeRallyBlocks() {
     let cmr_root_element = document.getElementById("CMR-rallies");
 
@@ -77,7 +105,15 @@ function makeRallyBlocks() {
                 ],
                 [
                     makeRallyHeader(rally),
-                    makeStageTable("CMR", rally, "Rally")
+                    ENode(
+                        "div",
+                        [],
+                        [
+                            ENode("h4", [], [TNode("Rally")]),
+                            makeStageTable("CMR", rally, "Rally"),
+                        ]
+                    ),
+                    makeStagesList(rally)
                 ]
             )
         );
@@ -110,7 +146,11 @@ function preprocessRowData(stagetime_data) {
 }
 
 async function fetchRallyTimes(rally) {
-    const response = await fetch(api_url + `/CMR/${rally}/Rally`);
+    return await fetchStageTimes(rally, "Rally");
+}
+
+async function fetchStageTimes(rally, stage) {
+    const response = await fetch(api_url + `/CMR/${rally}/${stage}`);
     if (response.status === 200) {
         const data = await response.json();
         return Promise.resolve(data);
@@ -119,28 +159,30 @@ async function fetchRallyTimes(rally) {
     }
 }
 
-async function loadRallies() {
-    
+function updateTableData(rally, stage, data) {
+    let tablebody = document.getElementById(makeTableBodyId('CMR', rally, stage));
+    tablebody.innerText = '';
+    data.forEach(stagetime_data => {
+        tablebody.appendChild(makeRow(preprocessRowData(stagetime_data)));
+    });
+}
+
+async function loadStageData(rally, stage) {
+    const stageTimes = await fetchStageTimes(rally, stage);
+    updateTableData(rally, stage, stageTimes);
+}
+
+async function loadRalliesData() {
     let rally_queries = rally_list.map(fetchRallyTimes)
-
     let rally_data = await Promise.all(rally_queries)
-
     for (let i = 0; i < rally_list.length; ++i) {
         const rally = rally_list[i];
         let rally_times = rally_data[i];
-        
-        console.log(rally);
-        console.log(rally_times);
-
-        let rallyTable = document.getElementById(getTableIdentifier("CMR", rally, "Rally"));
-        rally_times.forEach(stagetime_data => {
-            console.log(stagetime_data);
-            rallyTable.appendChild(makeRow(preprocessRowData(stagetime_data)));
-        });
+        updateTableData(rally, "Rally", rally_times);
     }
 }
 
 makeRallyBlocks();
-loadRallies()
+loadRalliesData()
     .then(() => console.log("OK"))
     .catch(() => console.log("ERROR"));
