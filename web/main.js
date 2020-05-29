@@ -3,6 +3,11 @@ import { ENode, TNode } from "./domppa.js"
 
 const tableColumnNames = ["player","time","splits","car","transmission"]
 
+let stages_loaded = {};
+rally_list.forEach(rally => {
+    stages_loaded[rally] = {};
+});
+
 function makeRallyHeader(rally) {
     return ENode(
         "h3",
@@ -168,8 +173,11 @@ function updateTableData(rally, stage, data) {
 }
 
 async function loadStageData(rally, stage) {
-    const stageTimes = await fetchStageTimes(rally, stage);
-    updateTableData(rally, stage, stageTimes);
+    if (!stages_loaded[rally][stage]) {
+        const stageTimes = await fetchStageTimes(rally, stage);
+        updateTableData(rally, stage, stageTimes);
+        stages_loaded[rally][stage] = true;
+    }
 }
 
 async function loadRalliesData() {
