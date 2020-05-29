@@ -37,7 +37,6 @@ function makeStageTable(game, rally, stage, ...attributes) {
     return ENode("table",
         [
             ["id", makeTableId(game, rally, stage)],
-            ["width", "90%"],
             ...attributes],
         [
             ENode(

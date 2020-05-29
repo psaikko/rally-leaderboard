@@ -46,3 +46,15 @@ td {
 .stages-list {
     user-select: none;
 }
+
+.stages-list table {
+    width: 100%;
+}
+
+.stages-list li {
+    padding: 5px;
+    border: 2px solid darkgray;
+    border-bottom: 2px solid gray;
+    border-right: 2px solid gray;
+    margin: 5px;
+}
