@@ -38,3 +38,11 @@ td {
 .game-block {
     padding-left: 1%;
 }
+
+.hidden {
+    display: none
+}
+
+.stages-list {
+    user-select: none;
+}
