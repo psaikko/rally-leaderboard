@@ -35,7 +35,10 @@ function makeTableId(game, rally, stage) {
 
 function makeStageTable(game, rally, stage, ...attributes) {
     return ENode("table",
-        [["id", makeTableId(game, rally, stage)], ...attributes],
+        [
+            ["id", makeTableId(game, rally, stage)],
+            ["width", "90%"],
+            ...attributes],
         [
             ENode(
                 "thead",
@@ -48,7 +51,16 @@ function makeStageTable(game, rally, stage, ...attributes) {
             ),
             ENode(
                 "tbody",
-                [["id", makeTableBodyId(game, rally, stage)]]
+                [["id", makeTableBodyId(game, rally, stage)]],
+                [ENode(
+                    "tr", 
+                    [],
+                    [ENode(
+                        "td",
+                        [["colspan", tableColumnNames.length]],
+                        [TNode("Loading...")]
+                    )]
+                )]
             )
         ]
     );
@@ -155,6 +167,7 @@ async function fetchRallyTimes(rally) {
 }
 
 async function fetchStageTimes(rally, stage) {
+    await new Promise(resolve => setTimeout(resolve, 200));
     const response = await fetch(apiUrl + `/CMR/${rally}/${stage}`);
     if (response.status === 200) {
         const data = await response.json();
