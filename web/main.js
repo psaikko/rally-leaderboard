@@ -64,11 +64,13 @@ function createTables() {
 }
 
 function formatTime(hundredths) {
+    const pad2 = (p, x) => (x < 10 ? p : "") + x;
+
     const minutes = hundredths / 6000 | 0;
-    hundredths -= minutes * 6000;
+    hundredths %= 6000;
     const seconds = hundredths / 100 | 0;
-    hundredths -= seconds * 100;
-    return `${minutes}:${seconds}.${hundredths}`;
+    hundredths %= 100;
+    return `${pad2("!", minutes)}:${pad2("0", seconds)}.${pad2("0", hundredths)}`;
 }
 
 function getSplitDiffs(splits) {
