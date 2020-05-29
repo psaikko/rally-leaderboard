@@ -1,6 +1,6 @@
-export const api_url = "https://3tdo136oyi.execute-api.eu-north-1.amazonaws.com/prod/leaderboard";
+export const apiUrl = "https://3tdo136oyi.execute-api.eu-north-1.amazonaws.com/prod/leaderboard";
 
-export const rally_list = [
+export const rallyList = [
     "New Zealand",
     "Greece",
     "Monte Carlo",
@@ -11,7 +11,7 @@ export const rally_list = [
     "Great Britain"
 ]
 
-export const stage_lists = {
+export const stageLists = {
     "New Zealand": [
         "Wellsford",
         "Okahu",

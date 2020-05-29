@@ -1,11 +1,11 @@
-import { api_url, rally_list, stage_lists } from "./config.js";
+import { apiUrl, rallyList, stageLists } from "./config.js";
 import { ENode, TNode } from "./domppa.js"
 
 const tableColumnNames = ["player","time","splits","car","transmission"]
 
-let stages_loaded = {};
-rally_list.forEach(rally => {
-    stages_loaded[rally] = {};
+let stagesLoaded = {};
+rallyList.forEach(rally => {
+    stagesLoaded[rally] = {};
 });
 
 function makeRallyHeader(rally) {
@@ -54,14 +54,14 @@ function makeStageTable(game, rally, stage, ...attributes) {
     );
 }
 
-function makeRow(stagetime_data) {
+function makeRow(stageTimeData) {
     return ENode(
         "tr",
         [],
         tableColumnNames.map(colname => ENode(
             "td", 
             [["class", (colname === "time" || colname === "splits") ? "timing" : ""]],
-            [TNode(stagetime_data[colname])]
+            [TNode(stageTimeData[colname])]
         ))
     );
 }
@@ -74,7 +74,7 @@ function makeStagesList(rally) {
             ENode(
                 "ol",
                 [["class", "stages-list"]],
-                stage_lists[rally].map(stagename => {
+                stageLists[rally].map(stagename => {
                     var table = makeStageTable("CMR",rally,stagename,["class","hidden"]);
                     var listitem = ENode(
                         "li",
@@ -98,10 +98,10 @@ function makeStagesList(rally) {
 }
 
 function makeRallyBlocks() {
-    let cmr_root_element = document.getElementById("CMR-rallies");
+    let cmrRootElement = document.getElementById("CMR-rallies");
 
-    rally_list.forEach(rally => {
-        cmr_root_element.appendChild(
+    rallyList.forEach(rally => {
+        cmrRootElement.appendChild(
             ENode(
                 "div",
                 [
@@ -142,12 +142,12 @@ function getSplitDiffs(splits) {
     return splits;
 }
 
-function preprocessRowData(stagetime_data) {
-    stagetime_data["transmission"] = stagetime_data["manual"] ? "Manual" : "Automatic";
-    stagetime_data["time"] = formatTime(stagetime_data["time"]);
-    stagetime_data["splits"] = getSplitDiffs(stagetime_data["splits"])
-    stagetime_data["splits"] = stagetime_data["splits"].map(formatTime);
-    return stagetime_data;
+function preprocessRowData(stageTimeData) {
+    stageTimeData["transmission"] = stageTimeData["manual"] ? "Manual" : "Automatic";
+    stageTimeData["time"] = formatTime(stageTimeData["time"]);
+    stageTimeData["splits"] = getSplitDiffs(stageTimeData["splits"])
+    stageTimeData["splits"] = stageTimeData["splits"].map(formatTime);
+    return stageTimeData;
 }
 
 async function fetchRallyTimes(rally) {
@@ -155,7 +155,7 @@ async function fetchRallyTimes(rally) {
 }
 
 async function fetchStageTimes(rally, stage) {
-    const response = await fetch(api_url + `/CMR/${rally}/${stage}`);
+    const response = await fetch(apiUrl + `/CMR/${rally}/${stage}`);
     if (response.status === 200) {
         const data = await response.json();
         return Promise.resolve(data);
@@ -167,26 +167,26 @@ async function fetchStageTimes(rally, stage) {
 function updateTableData(rally, stage, data) {
     let tablebody = document.getElementById(makeTableBodyId('CMR', rally, stage));
     tablebody.innerText = '';
-    data.forEach(stagetime_data => {
-        tablebody.appendChild(makeRow(preprocessRowData(stagetime_data)));
+    data.forEach(stageTimeData => {
+        tablebody.appendChild(makeRow(preprocessRowData(stageTimeData)));
     });
 }
 
 async function loadStageData(rally, stage) {
-    if (!stages_loaded[rally][stage]) {
+    if (!stagesLoaded[rally][stage]) {
         const stageTimes = await fetchStageTimes(rally, stage);
         updateTableData(rally, stage, stageTimes);
-        stages_loaded[rally][stage] = true;
+        stagesLoaded[rally][stage] = true;
     }
 }
 
 async function loadRalliesData() {
-    let rally_queries = rally_list.map(fetchRallyTimes)
-    let rally_data = await Promise.all(rally_queries)
-    for (let i = 0; i < rally_list.length; ++i) {
-        const rally = rally_list[i];
-        let rally_times = rally_data[i];
-        updateTableData(rally, "Rally", rally_times);
+    let rallyQueries = rallyList.map(fetchRallyTimes)
+    let rallyData = await Promise.all(rallyQueries)
+    for (let i = 0; i < rallyList.length; ++i) {
+        const rally = rallyList[i];
+        let rallyTimes = rallyData[i];
+        updateTableData(rally, "Rally", rallyTimes);
     }
 }
 
