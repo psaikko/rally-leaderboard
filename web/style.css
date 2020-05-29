@@ -30,3 +30,11 @@ td {
     color: red;
     text-shadow: 0 0 4px yellow;
 }
+
+.rally-block {
+    padding-left: 1%;
+}
+
+.game-block {
+    padding-left: 1%;
+}
