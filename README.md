@@ -1,10 +1,12 @@
 # rallyboard
 
-Backend and database for an online leaderboard for old PC rally games.
+Backend, database, and static frontend for an online leaderboard for old PC rally games.
+
+View the leaderboard on [github.io](https://psaikko.github.io/rally-leaderboard/web/)!
 
 This project is based on the [serverless REST API example tempate](https://github.com/serverless/examples/tree/master/aws-node-rest-api-with-dynamodb).
 
-See also the [savefile decoder repository](https://github.com/psaikko/rally-decode).
+See also the related [savefile decoder repository](https://github.com/psaikko/rally-decode).
 
 ## Setup
 
