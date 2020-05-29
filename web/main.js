@@ -44,6 +44,9 @@ function makeRow(stagetime_data) {
     tableColumnNames.forEach(colname => {
         let cell = document.createElement("td")
         cell.innerText = stagetime_data[colname];
+        if (colname === "time" || colname === "splits") {
+            cell.className = "timing";
+        }            
         row.appendChild(cell);
     });
     return row;

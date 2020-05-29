@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "DSEG7";
+    src: url("assets/fonts/DSEG7Classic-Regular.ttf") format("truetype")
+}
+
 body {
     font-family: serif;
     background-color: lightgray;
@@ -13,4 +18,15 @@ th, td {
     border: 1px solid darkgray;
     border-top: 1px solid gray;
     border-left: 1px solid gray;
+}
+
+td {
+    padding-top: 5px;
+}
+
+.timing {
+    font-family: "DSEG7";
+    background-color: black;
+    color: red;
+    text-shadow: 0 0 4px yellow;
 }
