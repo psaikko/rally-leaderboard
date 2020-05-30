@@ -65,3 +65,12 @@ tbody .splits-column{
 .ss-table .splits-column {
     display: none
 }
+
+.splits-column {
+    width: 1px;
+}
+
+.split-span {
+    margin-left: 5px;
+    margin-right: 5px;
+}

@@ -79,7 +79,13 @@ function makeRow(stageTimeData) {
         tableColumnNames.map(colname => ENode(
             "td", 
             [["class", colname+"-column"]],
-            [TNode(stageTimeData[colname])]
+            colname === "splits" ?
+                stageTimeData[colname].map(s => ENode(
+                    "span", 
+                    [["class", "split-span"]], 
+                    [TNode(s)]
+                )) : 
+                [TNode(stageTimeData[colname])]
         ))
     );
 }
@@ -150,7 +156,7 @@ function formatTime(hundredths) {
     hundredths %= 6000;
     const seconds = hundredths / 100 | 0;
     hundredths %= 100;
-    return `${pad2("!", minutes)}:${pad2("0", seconds)}.${pad2("0", hundredths)}`;
+    return `${minutes ? pad2("!", minutes)+":" : ""}${pad2("0", seconds)}.${pad2("0", hundredths)}`;
 }
 
 function getSplitDiffs(splits) {
