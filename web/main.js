@@ -1,7 +1,7 @@
 import { apiUrl, rallyList, stageLists } from "./config.js";
 import { ENode, TNode } from "./domppa.js"
 
-const tableColumnNames = ["#","player","time","splits","car","transmission"]
+const tableColumnNames = ["#","player","time","sectors","car","transmission"]
 
 let stagesLoaded = {};
 rallyList.forEach(rally => {
@@ -79,11 +79,11 @@ function makeRow(stageTimeData) {
         tableColumnNames.map(colname => ENode(
             "td", 
             [["class", colname+"-column"]],
-            colname === "splits" ?
+            colname === "sectors" ?
                 stageTimeData[colname].map(s => ENode(
                     "span", 
-                    [["class", "split-span"]], 
-                    [TNode(s)]
+                    [["class", "sector-span" + ((s < 0) ? " best-sector" : "")]], 
+                    [TNode(formatTime(Math.abs(s)))]
                 )) : 
                 [TNode(stageTimeData[colname])]
         ))
@@ -159,20 +159,47 @@ function formatTime(hundredths) {
     return `${minutes ? pad2("!", minutes)+":" : ""}${pad2("0", seconds)}.${pad2("0", hundredths)}`;
 }
 
-function getSplitDiffs(splits) {
+function getSectors(splits) {
     for (let i = splits.length - 1; i > 0; --i) {
         splits[i] -= splits[i - 1];
     }
     return splits;
 }
 
-function preprocessRowData(stageTimeData, i) {
-    stageTimeData["#"] = i+1;
-    stageTimeData["transmission"] = stageTimeData["manual"] ? "Manual" : "Automatic";
-    stageTimeData["time"] = formatTime(stageTimeData["time"]);
-    stageTimeData["splits"] = getSplitDiffs(stageTimeData["splits"])
-    stageTimeData["splits"] = stageTimeData["splits"].map(formatTime);
-    return stageTimeData;
+function preprocessStageData(stageTimesData) {
+
+    stageTimesData.forEach((stageTimeData, i) => {
+        stageTimeData["#"] = i+1;
+        stageTimeData["transmission"] = stageTimeData["manual"] ? "Manual" : "Automatic";
+        stageTimeData["time"] = formatTime(stageTimeData["time"]);
+        stageTimeData["sectors"] = getSectors(stageTimeData["splits"])
+    })
+
+    // Find and mark global best sector times
+    const n_sectors = stageTimesData[0]["sectors"].length;
+    if (n_sectors > 1) {
+        // for each sector find entry with best time
+        let best_sectors_i = new Array(n_sectors);
+        let best_sectors_t = new Array(n_sectors);
+        for (let sector_i = 0; sector_i < n_sectors; ++sector_i) {
+            best_sectors_i[sector_i] = 0;
+            best_sectors_t[sector_i] = stageTimesData[0]["sectors"][sector_i];
+
+            for (let times_i = 1; times_i < stageTimesData.length; ++times_i) {
+                const sector_time = stageTimesData[times_i]["sectors"][sector_i];
+                if (sector_time < best_sectors_t[sector_i]) {
+                    best_sectors_t[sector_i] = sector_time;
+                    best_sectors_i[sector_i] = times_i;
+                }
+            }
+        }
+
+        // mark best sector time with negative number
+        for (let sector_i = 0; sector_i < n_sectors; ++sector_i) {
+            stageTimesData[best_sectors_i[sector_i]]["sectors"][sector_i] *= -1;
+        }
+    }
+    return stageTimesData;
 }
 
 async function fetchRallyTimes(rally) {
@@ -193,8 +220,9 @@ async function fetchStageTimes(rally, stage) {
 function updateTableData(rally, stage, data) {
     let tablebody = document.getElementById(makeTableBodyId('CMR', rally, stage));
     tablebody.innerText = '';
-    data.forEach((stageTimeData, i) => {
-        tablebody.appendChild(makeRow(preprocessRowData(stageTimeData, i)));
+
+    preprocessStageData(data).forEach((stageTimeData) => {
+        tablebody.appendChild(makeRow(stageTimeData));
     });
 }
 

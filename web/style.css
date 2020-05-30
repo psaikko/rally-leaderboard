@@ -54,23 +54,27 @@ td {
 }
 
 tbody .time-column,
-tbody .splits-column{
+tbody .sectors-column{
     font-family: "DSEG7";
     background-color: black;
     color: red;
     text-shadow: 0 0 4px yellow;
 }
 
-.rally-table .splits-column,
-.ss-table .splits-column {
+.best-sector {
+    color: lime;
+}
+
+.rally-table .sectors-column,
+.ss-table .sectors-column {
     display: none
 }
 
-.splits-column {
+.sectors-column {
     width: 1px;
 }
 
-.split-span {
+.sector-span {
     margin-left: 5px;
     margin-right: 5px;
 }
