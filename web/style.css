@@ -24,12 +24,6 @@ td {
     padding-top: 5px;
 }
 
-.timing {
-    font-family: "DSEG7";
-    background-color: black;
-    color: red;
-    text-shadow: 0 0 4px yellow;
-}
 
 .rally-block {
     padding-left: 1%;
@@ -57,4 +51,17 @@ td {
     border-bottom: 2px solid gray;
     border-right: 2px solid gray;
     margin: 5px;
+}
+
+tbody .time-column,
+tbody .splits-column{
+    font-family: "DSEG7";
+    background-color: black;
+    color: red;
+    text-shadow: 0 0 4px yellow;
+}
+
+.rally-table .splits-column,
+.ss-table .splits-column {
+    display: none
 }

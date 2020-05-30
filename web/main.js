@@ -33,18 +33,25 @@ function makeTableId(game, rally, stage) {
     return [game, rally, stage, "table"].join("-").replace(/ /g,"_");
 }
 
-function makeStageTable(game, rally, stage, ...attributes) {
+function makeStageTable(game, rally, stage) {
+    const tblClass = stagename => {
+        if (stagename === "Rally") return "rally-table";
+        if (stagename === "Super-Special") return "ss-table hidden";
+        return "stage-table hidden";
+    }
+
     return ENode("table",
         [
             ["id", makeTableId(game, rally, stage)],
-            ...attributes],
+            ["class", tblClass(stage)],
+        ],
         [
             ENode(
                 "thead",
                 [],
                 tableColumnNames.map(colname => ENode(
                     "th",
-                    [],
+                    [["class", colname+"-column"]],
                     [TNode(colname)]
                 ))
             ),
@@ -71,7 +78,7 @@ function makeRow(stageTimeData) {
         [],
         tableColumnNames.map(colname => ENode(
             "td", 
-            [["class", (colname === "time" || colname === "splits") ? "timing" : ""]],
+            [["class", colname+"-column"]],
             [TNode(stageTimeData[colname])]
         ))
     );
@@ -86,7 +93,7 @@ function makeStagesList(rally) {
                 "ol",
                 [["class", "stages-list"]],
                 stageLists[rally].map(stagename => {
-                    var table = makeStageTable("CMR",rally,stagename,["class","hidden"]);
+                    var table = makeStageTable("CMR",rally,stagename);
                     var listitem = ENode(
                         "li",
                         [["class", "stage-name"]],
