@@ -24,7 +24,6 @@ td {
     padding-top: 5px;
 }
 
-
 .rally-block {
     padding-left: 1%;
 }
@@ -51,6 +50,7 @@ td {
     border-bottom: 2px solid gray;
     border-right: 2px solid gray;
     margin: 5px;
+    overflow-x: auto;
 }
 
 tbody .time-column,
