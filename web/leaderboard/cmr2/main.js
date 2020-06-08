@@ -1,5 +1,5 @@
 import { apiUrl, rallyList, stageLists } from "./config.js";
-import { ENode, TNode } from "./domppa.js"
+import { ENode, TNode } from "../domppa.js"
 
 const tableColumnNames = ["#","player","time","sectors","car","transmission"]
 
@@ -16,7 +16,7 @@ function makeRallyHeader(rally) {
             ENode(
                 "img",
                 [
-                    ["src", `./assets/flags/${rally.toLowerCase()}.gif`],
+                    ["src", `../../assets/flags/${rally.toLowerCase()}.gif`],
                     ["width", 50]
                 ]
             ),
@@ -91,6 +91,7 @@ function makeRow(stageTimeData) {
 }
 
 function makeStagesList(rally) {
+    console.log(rally)
     return ENode("div",
         [],
         [
@@ -99,7 +100,7 @@ function makeStagesList(rally) {
                 "ol",
                 [["class", "stages-list"]],
                 stageLists[rally].map(stagename => {
-                    var table = makeStageTable("CMR",rally,stagename);
+                    var table = makeStageTable("CMR2",rally,stagename);
                     var listitem = ENode(
                         "li",
                         [["class", "stage-name"]],
@@ -122,7 +123,7 @@ function makeStagesList(rally) {
 }
 
 function makeRallyBlocks() {
-    let cmrRootElement = document.getElementById("CMR-rallies");
+    let cmrRootElement = document.getElementById("CMR2-rallies");
 
     rallyList.forEach(rally => {
         cmrRootElement.appendChild(
@@ -139,7 +140,7 @@ function makeRallyBlocks() {
                         [],
                         [
                             ENode("h4", [], [TNode("Rally")]),
-                            makeStageTable("CMR", rally, "Rally"),
+                            makeStageTable("CMR2", rally, "Rally"),
                         ]
                     ),
                     makeStagesList(rally)
@@ -203,12 +204,12 @@ function preprocessStageData(stageTimesData) {
 }
 
 async function fetchRallyTimes(rally) {
-    return await fetchStageTimes(rally, "Rally");
+    return await fetchStageTimes(rally, "Rally-Intermediate");
 }
 
 async function fetchStageTimes(rally, stage) {
     await new Promise(resolve => setTimeout(resolve, 200));
-    const response = await fetch(apiUrl + `/CMR/${rally}/${stage}`);
+    const response = await fetch(apiUrl + `/CMR2/${rally}/${stage}`);
     if (response.status === 200) {
         const data = await response.json();
         return Promise.resolve(data);
@@ -218,7 +219,7 @@ async function fetchStageTimes(rally, stage) {
 }
 
 function updateTableData(rally, stage, data) {
-    let tablebody = document.getElementById(makeTableBodyId('CMR', rally, stage));
+    let tablebody = document.getElementById(makeTableBodyId('CMR2', rally, stage));
     tablebody.innerText = '';
 
     preprocessStageData(data).forEach((stageTimeData) => {
