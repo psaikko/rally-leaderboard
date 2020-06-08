@@ -1,23 +1,12 @@
 @font-face {
     font-family: "DSEG7";
-    src: url("assets/fonts/DSEG7Classic-Regular.ttf") format("truetype")
+    src: url("../../assets/fonts/DSEG7Classic-Regular.ttf") format("truetype")
 }
 
 body {
-    font-family: serif;
-    background-color: lightgray;
-}
-
-table {
-    border: 2px solid darkgray;
-    border-bottom: 2px solid gray;
-    border-right: 2px solid gray;
-}
-
-th, td {
-    border: 1px solid darkgray;
-    border-top: 1px solid gray;
-    border-left: 1px solid gray;
+    font-family: sans-serif;
+    background-color: #9db4ac;
+    color: #d6ecdf
 }
 
 td {
@@ -46,23 +35,22 @@ td {
 
 .stages-list li {
     padding: 5px;
-    border: 2px solid darkgray;
-    border-bottom: 2px solid gray;
-    border-right: 2px solid gray;
+    border-bottom: 2px solid #d6ecdf;
     margin: 5px;
     overflow-x: auto;
+}
+
+.stages-list li:hover {
+    color: #fcfffe;
 }
 
 tbody .time-column,
 tbody .sectors-column{
     font-family: "DSEG7";
-    background-color: black;
-    color: red;
-    text-shadow: 0 0 4px yellow;
 }
 
 .best-sector {
-    color: lime;
+    color: #fcfffe;
 }
 
 .rally-table .sectors-column,
