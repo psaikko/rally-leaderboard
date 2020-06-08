@@ -9,8 +9,23 @@ body {
     color: #d6ecdf
 }
 
+table {
+    border-collapse: collapse;
+}
+
+tr {
+    border: solid;
+    border-width: 1px 0;
+}
+
+table tr:last-child {
+    border: none;
+}
+
 td {
-    padding-top: 5px;
+    padding-top: 0.3em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 .rally-block {
@@ -33,6 +48,10 @@ td {
     width: 100%;
 }
 
+.stages-list li:nth-of-type(1) {
+    border-top: 2px solid #d6ecdf;
+}
+
 .stages-list li {
     padding: 5px;
     border-bottom: 2px solid #d6ecdf;
@@ -40,7 +59,11 @@ td {
     overflow-x: auto;
 }
 
-.stages-list li:hover {
+.stages-list li p {
+    margin: 0.2em;
+}
+
+.stages-list li p:hover {
     color: #fcfffe;
 }
 
@@ -65,4 +88,29 @@ tbody .sectors-column{
 .sector-span {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+h3 {
+    font-size: x-large;
+}
+
+h4 {
+    font-size: larger;
+}
+
+td.player-column {
+    font-family: monospace;
+}
+
+span.expander {
+    font-family: monospace;
+    padding-left: 1em;
+}
+
+span.expander:after {
+    content: '[+]'
+}
+
+span.expander.expand:after {
+    content: '[-]'
 }

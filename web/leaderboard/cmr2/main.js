@@ -92,31 +92,54 @@ function makeRow(stageTimeData) {
 
 function makeStagesList(rally) {
     console.log(rally)
+
+    const listNodes = stageLists[rally].map(stagename => {
+        var table = makeStageTable("CMR2",rally,stagename);
+        var listitem = ENode(
+            "li",
+            [["class", "stage-name"]],
+            [
+                ENode("p",[],[TNode(stagename)]),
+                table
+            ]
+        )
+
+        listitem.hide = () => {
+            table.classList.add("hidden")
+        }
+
+        listitem.unhide = () => {
+            table.classList.remove("hidden")
+            loadStageData(rally, stagename);
+        }
+
+        listitem.addEventListener('click', e => {
+            const hidden = table.classList.toggle("hidden");
+            if (!hidden) {
+                loadStageData(rally, stagename);
+            }
+        })
+        
+        return listitem;
+    })
+
+    const expanderNode = ENode("span", [["class", "expander"]], [])
+    expanderNode.addEventListener('click', e => {
+        const expand = expanderNode.classList.toggle("expand");
+        if (expand)
+            listNodes.forEach(l => l.unhide())
+        else
+            listNodes.forEach(l => l.hide())
+    });
+
     return ENode("div",
         [],
         [
-            ENode("h4", [], [TNode("Stages")]),
+            ENode("h4", [], [TNode("Stages"), expanderNode]),
             ENode(
                 "ol",
                 [["class", "stages-list"]],
-                stageLists[rally].map(stagename => {
-                    var table = makeStageTable("CMR2",rally,stagename);
-                    var listitem = ENode(
-                        "li",
-                        [["class", "stage-name"]],
-                        [
-                            TNode(stagename),
-                            table
-                        ]
-                    )
-                    listitem.addEventListener('click', e => {
-                        const hidden = table.classList.toggle("hidden");
-                        if (!hidden) {
-                            loadStageData(rally, stagename);
-                        }
-                    })
-                    return listitem;
-                })
+                listNodes
             )
         ]
     );
