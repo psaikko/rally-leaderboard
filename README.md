@@ -2,7 +2,7 @@
 
 Backend, database, and static frontend for an online leaderboard for old PC rally games.
 
-View the leaderboard on [github.io](https://psaikko.github.io/rally-leaderboard/web/)!
+~~View the leaderboard on [github.io](https://psaikko.github.io/rally-leaderboard/web/)!~~ AWS backend has been deactived.
 
 This project is based on the [serverless REST API example tempate](https://github.com/serverless/examples/tree/master/aws-node-rest-api-with-dynamodb).
 
